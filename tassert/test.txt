@@ -1,0 +1,7 @@
+asdasd assertEqual(asdasd) asd fail(asd)
+asd
+/*asd*/
+public fail(asd){asdasd assertEqual(asdasd)}
+public assertEqual()
+d
+asd fail(assertEqual(asdasdas))

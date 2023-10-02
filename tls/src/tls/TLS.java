@@ -1,4 +1,3 @@
-package tls;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,12 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 
-
-
-// fini de valider les arguments , je suis a letape de creer naviguer les fichiers dans le dossier 
-
 public class TLS {
 	
+	// clsses utiliser pour stocker les infos sur les fichiers
 	public static class ProprieteFichier{
 		private String cheminDuFichier;
 		private String nomDuPaquet;
@@ -119,6 +115,7 @@ public class TLS {
 	}
 	
 
+	//methode utiliser pour valider les arguments recu par lutilisateur
 	private static boolean validerArgs(Path chemin, int cas) {
 		// TODO Auto-generated method stub
 		switch(cas) {
@@ -176,6 +173,7 @@ public class TLS {
 		
 	}
 	
+	//methode utiliser par parcourir notre projet et trouver les fichiers classes test 
 	private static void testerDossier(File dossier , List<ProprieteFichier> liste, String nomDossierSource) {
 		// TODO Auto-generated method stub
 		// si c'est un dossier, on rapelle la fonction recursivement pour traverser le sous dossier 
@@ -199,11 +197,17 @@ public class TLS {
 		}	
 	}
 	
+	//methode utiliser pour trouver les infos desirees par rapport au fichiers et les stocker dans une liste
 	private static void testerFichier(File fichier, List<ProprieteFichier> liste, String nomDossierSource) {
 		// TODO Auto-generated method stub
 		int tloc = calculerTLOC(fichier);
-		int tassert = 10;
-		double tcmp = tloc/tassert;
+		int tassert = calculerTassert(fichier);
+		double tcmp = 0.0;
+		if(tassert == 0) {
+			tcmp = tloc;
+		}else {
+			tcmp = tloc/tassert;
+		}
 		
 		String nomDuChemin =  fichier.getName();
 		String nomDuPaquet="";
@@ -260,59 +264,74 @@ public class TLS {
 			
 	}
 	
+	//methode utiliser retourner le tassert du fichier
+	private static int calculerTassert(File fichier) {
+		int count = 0;
+        try (BufferedReader buffer = new BufferedReader(new FileReader(fichier))) {
+            String line;
+            
+            while ((line = buffer.readLine()) != null) {
+            	String[] fragments1 = line.split("assert(.*\\()");
+            	String[] fragments2 = line.split("fail\\(");
+                count += fragments1.length-1 + fragments2.length-1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+	
+
+	//methode utiliser retourner le tloc
 	private static int calculerTLOC(File fichierATester) {
+	
+		int count = 0;
+
+        try(BufferedReader buffer = new BufferedReader(new FileReader(fichierATester))) {
+            String ligne;
+
+            while ((ligne = buffer.readLine()) != null) 
+            {
+            	ligne = ligne.trim();
+                //ignorer lignes vides et commentaires
+                if (ligne.isEmpty() || ligne.startsWith("//"))
+                    continue;
+                
+                if(!ligne.startsWith("/*"))
+                    count++;
+
+                //check si la ligne contient un commentaire sur plusieurs lignes
+                if (ligne.contains("/*"))
+                    while (!ligne.contains("*/"))
+                        ligne = (buffer.readLine()).trim();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+			
+	//methode utiliser pour imprimer la liste des fichiers analyses
+	private static void imprimer(List<ProprieteFichier> liste) {
 		// TODO Auto-generated method stub
-		int tloc = 0;
 		
-		try( BufferedReader lecteur = new BufferedReader (new FileReader(fichierATester)) ){
-			String ligne;
-			while ( (ligne = lecteur.readLine()) != null) {
-				//retirer les espaces inutiles sans modifier le string
-				ligne =ligne.trim();
-				// si la ligne est vide, on prend la prochaine ligne
-				if(ligne.isEmpty()) {
-					continue;
-				}
-				// regEx pour reperer les lignes completes de commentaire debutant par //
-				String ligneDeCommentaire = "^\\s*//.*";
-				if(ligne.matches(ligneDeCommentaire)) {
-					continue;
-				}
-				
-				Boolean commentaireMultilignes = false;
-				String debutCommentaire = "^\\s*//.*";
-				String finCommentaire = ".*\\*/\\s*$";
-				
-				if(ligne.matches(debutCommentaire)) {
-					commentaireMultilignes = true;
-				}
-				if(ligne.matches(finCommentaire)) {
-					commentaireMultilignes = false;
-				}
-				if(!commentaireMultilignes) {
-					tloc++;
-				}
+		if(liste.isEmpty()) {
+			System.out.println("Aucune classe suspecte dans ce projet");
+		}else {
+			
+			for(ProprieteFichier proprietes : liste) {
+
+				System.out.println(proprietes.cheminDuFichier + ", " + proprietes.nomDuPaquet + ", " + proprietes.nomDeLaClasse + ", " + proprietes.tloc + ", " + proprietes.tassert + ", " + proprietes.tcmp);
 				
 			}
 			
-		} catch (IOException e) {
-			System.err.println("Erreur de lecture du fichier: " + e.getMessage());
-			System.exit(2);
 		}
 		
-		return tloc;
-			
 	}
 	
-	private static void imprimer(List<ProprieteFichier> liste) {
-		// TODO Auto-generated method stub
-		for(ProprieteFichier proprietes : liste) {
-
-			System.out.println(proprietes.cheminDuFichier + ", " + proprietes.nomDuPaquet + ", " + proprietes.nomDeLaClasse + ", " + proprietes.tloc + ", " + proprietes.tassert + ", " + proprietes.tcmp);
-			
-		}
-	}
-	
+	// methode utiliser pour modifier le fichier .csv recu par lutilisateur
 	private static void creerCSV(String argSortie, List<TLS.ProprieteFichier> liste) {
 		// TODO Auto-generated method stub
 		
@@ -331,7 +350,7 @@ public class TLS {
 			e.printStackTrace();
 		}
 		
-		System.out.println("csv file modifie avec succes.");
+		System.out.println("csv file modifie avec succes. Si des classes suspectes ont ete trouvees, elles ont ete rajoutees au fichier csv");
 		
 		
 	}

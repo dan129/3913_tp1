@@ -9,12 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * A faire 
- * - arranger les dossier .jar pour que la methode appel fonctionne pour tls.jar
- */
-
-
 public class Tropcomp {
 	
 	public static class ProprieteFichier {
@@ -149,11 +143,17 @@ public class Tropcomp {
 	
 	private static void imprimer(List<ProprieteFichier> liste) {
 		// TODO Auto-generated method stub
-		for(ProprieteFichier proprietes : liste) {
+		
+		if(liste.isEmpty()) {
+			System.out.println("Aucune classe suspecte dans ce projet");
+		}else {
+			for(ProprieteFichier proprietes : liste) {
 
-			System.out.println(proprietes.cheminDuFichier + ", " + proprietes.nomDuPaquet + ", " + proprietes.nomDeLaClasse + ", " + proprietes.tloc + ", " + proprietes.tassert + ", " + proprietes.tcmp);
-			
+				System.out.println(proprietes.cheminDuFichier + ", " + proprietes.nomDuPaquet + ", " + proprietes.nomDeLaClasse + ", " + proprietes.tloc + ", " + proprietes.tassert + ", " + proprietes.tcmp);
+				
+			}
 		}
+		
 	}
 	
 	private static void creerCSV(String argSortie, List<Tropcomp.ProprieteFichier> listeClasseSuspecte) {
@@ -174,7 +174,7 @@ public class Tropcomp {
 			e.printStackTrace();
 		}
 		
-		System.out.println("csv file modifie avec succes.");
+		System.out.println("csv file modifie avec succes. Si des classes suspectes ont ete trouvees, elles ont ete rajoutees au fichier csv");
 		
 		
 	}

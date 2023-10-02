@@ -23,11 +23,18 @@ public class Tloc {
 
             while ((ligne = buffer.readLine()) != null) 
             {
+            	ligne = ligne.trim();
                 //ignorer lignes vides et commentaires
-                if (ligne.trim().isEmpty() || ligne.trim().startsWith("//") || ligne.trim().startsWith("/*"))
+                if (ligne.isEmpty() || ligne.startsWith("//"))
                     continue;
+                
+                if(!ligne.startsWith("/*"))
+                    count++;
 
-                count++;
+                //check si la ligne contient un commentaire sur plusieurs lignes
+                if (ligne.contains("/*"))
+                    while (!ligne.contains("*/"))
+                        ligne = (buffer.readLine()).trim();
             }
         } catch (IOException e) {
             e.printStackTrace();

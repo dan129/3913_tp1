@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,13 +9,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /*
  * A faire 
  * - arranger les dossier .jar pour que la methode appel fonctionne pour tls.jar
- * -tester appel a 2 argument
- * 
- * toute la fonction pour lappel a 4 argument
  */
 
 
@@ -62,7 +59,7 @@ public class Tropcomp {
 		}			
 	}
 
-	public Tropcomp() {
+	public Tropcomp() { 
 		// TODO Auto-generated constructor stub
 	}
 
@@ -70,10 +67,10 @@ public class Tropcomp {
 		// TODO Auto-generated method stub
 		
 		if(args.length < 2 || args.length == 3 || args.length > 4) {
-			System.err.println("Mauvais nbr arguments. Veuillez soit passez un"
+			System.err.println("Mauvais nbr arguments entrees. Veuillez soit passez deux"
 					+ " argument (le chemin d'accès d'un dossier qui contient"
-					+ " du code test java) /n ou trois arguments (tls -o <chemin-à-la"
-					+ "-sortie.csv> <chemin-de-l'entrée>)");
+					+ " du code test java et un seuil entre 0.0 et 1.0) /n ou trois arguments (tls -o <chemin-à-la"
+					+ "-sortie.csv> <chemin-de-l'entrée> seuil(entre 0.0 et 1.0)");
 		}
 		
 		// liste des resultats
@@ -122,15 +119,8 @@ public class Tropcomp {
 			
 			//tester si le deuxieme argument est un numero
 			String arg4 = args[3];
-			
 			try {
 			double seuil = Double.parseDouble(arg4);
-			} catch(NumberFormatException e) {
-				System.err.println("Le deuxieme argument doit etre un numero qui"
-						+ " represente le seuil(pourcentage sans le signe)");
-				System.exit(1);
-				
-			}
 			
 			if(!(validerArgs(cheminSortie,2))) {
 				System.exit(1);
@@ -138,6 +128,17 @@ public class Tropcomp {
 			
 			if(!(validerArgs(cheminEntree,3))) {
 				System.exit(1);
+			}
+			
+			appelTLSUnArg(argEntree, seuil, liste);
+			trouverListeClasseSuspecte(seuil, liste, listeClasseSuspecte);
+			creerCSV(argSortie, listeClasseSuspecte);
+			
+			
+			} catch(NumberFormatException e) {
+				System.err.println("Le deuxieme argument doit etre un numero a vigule entre (0.0 et 1.0) qui"
+						+ " represente le seuil(pourcentage sans le signe)");
+				System.exit(1);	
 			}
 			
 			
@@ -153,6 +154,29 @@ public class Tropcomp {
 			System.out.println(proprietes.cheminDuFichier + ", " + proprietes.nomDuPaquet + ", " + proprietes.nomDeLaClasse + ", " + proprietes.tloc + ", " + proprietes.tassert + ", " + proprietes.tcmp);
 			
 		}
+	}
+	
+	private static void creerCSV(String argSortie, List<Tropcomp.ProprieteFichier> listeClasseSuspecte) {
+		// TODO Auto-generated method stub
+		
+		try (FileWriter resultats = new FileWriter(argSortie)) {
+			
+			resultats.append("chemin du fichier, nom du paquet, nom de la classe, tloc de la classe, tassert de la classe, tcmp");
+			resultats.append("\n");
+			
+			for(ProprieteFichier proprites : listeClasseSuspecte) {
+				resultats.append(proprites.cheminDuFichier + ", " + proprites.nomDuPaquet + ", " + proprites.nomDeLaClasse + ", " + proprites.tloc + ", " + proprites.tassert + ", " + proprites.tcmp);
+				resultats.append("\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Erreur dans la modification du fichier CSV");
+			e.printStackTrace();
+		}
+		
+		System.out.println("csv file modifie avec succes.");
+		
+		
 	}
 	
 	private static void trouverListeClasseSuspecte(double seuil, List<Tropcomp.ProprieteFichier> liste,
@@ -234,7 +258,8 @@ public class Tropcomp {
 		
 		
 		//pour appel le fichier .jar
-		ProcessBuilder createurProcessus = new ProcessBuilder("java", "-jar","\"C:\\Users\\4carl\\eclipse-workspace\\IFT3913_tp1.4\\src\\tls.jar\"" );
+		String chemin = ".\\jar\\tls.jar";
+		ProcessBuilder createurProcessus = new ProcessBuilder("java", "-jar",chemin );
 		//pour ajouter les args
 		createurProcessus.command().addAll(List.of(arg));
 		try {

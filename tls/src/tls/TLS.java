@@ -206,7 +206,7 @@ public class TLS {
 		if(tassert == 0) {
 			tcmp = tloc;
 		}else {
-			tcmp = tloc/tassert;
+			tcmp = (double) tloc/tassert;
 		}
 		
 		String nomDuChemin =  fichier.getName();
@@ -350,7 +350,7 @@ public class TLS {
 			e.printStackTrace();
 		}
 		
-		System.out.println("csv file modifie avec succes. Si des classes suspectes ont ete trouvees, elles ont ete rajoutees au fichier csv");
+		System.out.println("csv file modifie avec succes. Si des classes TEST ont ete trouvees, elles ont ete rajoutees au fichier csv");
 		
 		
 	}

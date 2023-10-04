@@ -205,9 +205,7 @@ public class TLS {
 		int tloc = calculerTLOC(fichier);
 		int tassert = calculerTassert(fichier);
 		double tcmp = 0.0;
-		if(tassert == 0) {
-			tcmp = tloc;
-		}else {
+		if(tassert > 0) {
 			tcmp = (double) tloc/tassert;
 		}
 		

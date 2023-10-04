@@ -194,7 +194,7 @@ public class Tropcomp {
 		//trouver liste des classes potentielement suspect en considerant TLOC
 		int longueur = liste.size();
 		double nbClasseSuspecte = longueur * seuil;
-		int pivot = longueur - (int) Math.round(nbClasseSuspecte);
+		int pivot = longueur - (int) Math.ceil(nbClasseSuspecte);
 		//pour garantir une classe suspect si le seuil est trop faible
 		if(pivot == longueur) {
 			pivot--;

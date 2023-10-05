@@ -10,12 +10,13 @@ exemple:
 │ ├── tropcomp.jar
 │ ├── tassert.jar
 │ ├── tloc.jar
-│ ├── jar
-│ │ ├── tls.jar
+│ ├── tls.jar
 ├── jfreechart-master
 │ ├── ...
 
-commande à exécuter : java -jar ./jar/tropcomp.jar -o ./tropcomp_10.csv ./jfreechart-master/src/test/ 0.1
+commande à exécuter : 
+cd ./jar 
+java -jar ./tropcomp.jar -o ./../tropcomp_10.csv ./../jfreechart-master/src/test/ 0.1
 
 Pour TLS,
 -Pour identifier si un fichier .java est une classe test, on verifie si le nom du fichier se termine par Test.java.
@@ -27,7 +28,7 @@ appel avec sortie dans un fichier .csv : java -jar <chemin-de : tls.jar> -o <che
 - On assume que le fichier .csv existe déjà et que le chemin relatif ou absolue de ce fichier est fournit en argument.
 
 Tropcomp:
--Pour que tropcomp.jar fonctionne correctement, celui-ci doit se retrouver dans le même dossier que qu'un dossier nommé jar avec tls.jar dedans
+-Pour que tropcomp.jar fonctionne correctement, on doit l'exécuter à partir du dossier dans lequel il se trouve (avec tls.jar à ses côtés)
 -Le seuil fournit doit être en format double tel qu'entre 0.0 et 1.0.
 -On prends tout ce qui est plus grand que le seuil pour trouver les classes potiellement suspectes. Donc, si le seuil est 20% et on a 7 classe, 7*20%= 1,4. Donc, au maximum 1 classe est suspecte.
 

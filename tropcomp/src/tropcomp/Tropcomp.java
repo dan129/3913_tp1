@@ -194,7 +194,7 @@ public class Tropcomp {
 		//trouver liste des classes potentielement suspect en considerant TLOC
 		int longueur = liste.size();
 		double nbClasseSuspecte = longueur * seuil;
-		int pivot = longueur - (int) Math.ceil(nbClasseSuspecte);
+		int pivot = longueur - (int) Math.floor(nbClasseSuspecte);
 		//pour garantir une classe suspect si le seuil est trop faible
 		if(pivot == longueur) {
 			pivot--;
@@ -259,7 +259,7 @@ public class Tropcomp {
 		
 		
 		//pour appel le fichier .jar
-		String chemin = ".\\jar\\tls.jar";
+		String chemin = ".\\tls.jar";
 		ProcessBuilder createurProcessus = new ProcessBuilder("java", "-jar",chemin );
 		//pour ajouter les args
 		createurProcessus.command().addAll(List.of(arg));

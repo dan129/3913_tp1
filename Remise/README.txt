@@ -7,10 +7,11 @@ Dans le dossier principal à partir duquel on exécute le programme il faut avoi
 exemple:
 ├── tropcomp_10.csv
 ├── jar
-│ ├── tls.jar
 │ ├── tropcomp.jar
 │ ├── tassert.jar
 │ ├── tloc.jar
+│ ├── jar
+│ │ ├── tls.jar
 ├── jfreechart-master
 │ ├── ...
 
@@ -30,8 +31,7 @@ Pour tropcomp,
 
 -Pour que tropcomp.jar fonctionne correctement, celui-ci doit se retrouver dans le même dossier que qu'un dossier nommé jar avec tls.jar dedans
 -le seuil doit être en format double. (c'est-à-dire on s'entend a recevoir des entrée entre 0.0 et 1.0)
-- arrondis pour trouver les classes potiellement suspect donc si le seuil est 20% et on a 7 classe, 7*20%= 1,4 . Donc au maximum une classe suspecte. alors que pour 8 classe et seuil de 20%. 8 *20% = 1,6 . Donc 2 classes potentiellement suspecte
-
+- arrondis pour trouver les classes potiellement suspect donc si le seuil est 20% et on a 7 classe, 7*20%= 1,4. Donc, au maximum 2 classes suspectes.
 
 appel : java -jar <chemin-de : tropcomp.jar> <chemin-de-l'entrée> <seuil>  pour produire la sortie à la ligne de commande
 
